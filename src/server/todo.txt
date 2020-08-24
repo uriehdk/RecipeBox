@@ -1,0 +1,17 @@
+The server backend will be handling all database interactions
+for the webpage, as well as user authentication. The to-do list
+for functionality is:
+
+- User authentication
+    - Register new users
+    - Login existing users
+- Recipe database
+    - CRUD operations on recipes
+    - Assign recipes to authors
+    - Public/private recipes
+    - Like counter on recipes
+    - Comments?
+
+SQL will likely be used for the database, unless a particular
+NoSQL database seems to fit the deal better. MongoDB is a
+candidate. 

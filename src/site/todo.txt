@@ -1,0 +1,9 @@
+The site frontend takes the bulk of the design. To-do list:
+
+- Main page
+- Header bar to navigate site- Logo
+- Footer (includes authors)
+- List of public recipes
+- List of private recipes
+- Interfacing with backend
+- Viewing individual recipes
