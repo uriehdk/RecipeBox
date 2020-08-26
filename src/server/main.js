@@ -1,10 +1,10 @@
 const { MongoClient } = require('mongodb');
 const credentials = require('./credentials.json');
-const client = MongoClient(credentials.uri);
+const client = MongoClient(credentials.uri, {useUnifiedTopology: true});
 
 async function run() {
     try {
-        await client.connect({useNewUriParser: true, useUnifiedTopology: true});
+        await client.connect();
     
         const database = client.db('recipebox');
         const collection = database.collection('recipes');
