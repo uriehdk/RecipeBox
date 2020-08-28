@@ -95,7 +95,7 @@ async function removeRecipe(title) {
     }
 }
 
-async function addUser(username, password) {
+async function addUser(username, password, permissions) {
     try {
         await client.connect();
         const database = client.db('recipebox');
@@ -106,7 +106,7 @@ async function addUser(username, password) {
         });
         if (potentialUser.length > 0) throw new Error('Username taken');
 
-        await collection.insertOne({user: username, pass: password}, (err, res) => {
+        await collection.insertOne({user: username, pass: password, perms: permissions}, (err, res) => {
             if (err) throw err;
             console.log("Inserted user");
             db.close();
@@ -127,7 +127,7 @@ async function validateUser(username, password) {
             db.close();
         });
 
-        if (validated.length > 0) return true;
+        if (validated.length > 0) return validated[0].perms;
         else return false;
     } finally {
         await client.close();
