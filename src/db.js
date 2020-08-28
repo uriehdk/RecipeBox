@@ -94,3 +94,42 @@ async function removeRecipe(title) {
         await client.close();
     }
 }
+
+async function addUser(username, password) {
+    try {
+        await client.connect();
+        const database = client.db('recipebox');
+        const collection = database.collection('recipes');
+
+        const potentialUser = await collection.findAll({user: username}, {user: 1}, (err, res) => {
+            if (err) throw err;
+        });
+        if (potentialUser.length > 0) throw new Error('Username taken');
+
+        await collection.insertOne({user: username, pass: password}, (err, res) => {
+            if (err) throw err;
+            console.log("Inserted user");
+            db.close();
+        });
+    } finally {
+        await client.close();
+    }
+}
+
+async function validateUser(username, password) {
+    try {
+        await client.connect();
+        const database = client.db('recipebox');
+        const collection = database.collection('recipes');
+
+        const validated = await collection.findAll({user: username, pass: password}, (err, res) => {
+            if (err) throw err;
+            db.close();
+        });
+
+        if (validated.length > 0) return true;
+        else return false;
+    } finally {
+        await client.close();
+    }
+}
