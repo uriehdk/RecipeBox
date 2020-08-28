@@ -5,26 +5,6 @@ const client = MongoClient(credentials.uri, {useUnifiedTopology: true});
 const hostname = '127.0.0.1';
 const port = 3000;
 
-
-
-async function run() {
-    try {
-        await client.connect();
-    
-        const database = client.db('recipebox');
-        const collection = database.collection('recipes');
-    
-        // Query for a movie that has the title 'Back to the Future'
-        const query = {title: 'Mediterranean White Bean Salad'};
-        const recipe = await collection.findOne(query);
-    
-        console.log(recipe);
-    } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
-    }
-}
-
 async function addRecipe(title, ingredients, steps) {
     try {
         await client.connect();
@@ -33,26 +13,9 @@ async function addRecipe(title, ingredients, steps) {
         const collection = database.collection('recipes');
         recipe = {title: title, ingredients: ingredients, stes: steps};
 
-        collection.insertOne(recipe, (err, res) => {
+        await collection.insertOne(recipe, (err, res) => {
             if (err) throw err;
             console.log("Registered recipe");
-            db.close();
-        });
-    } finally {
-        await client.close();
-    }
-}
-
-async function removeRecipe(title) {
-    try {
-        await client.connect();
-        const database = client.db('recipebox');
-        const collection = database.collection('recipes');
-
-        const query = {title: title};
-        collection.deleteOne(query, (err, res) => {
-            if (err) throw err;
-            console.log("Deleted recipe");
             db.close();
         });
     } finally {
@@ -97,4 +60,76 @@ async function getRecipes() {
     }
 }
 
-run().catch(console.dir);
+async function updateRecipe(title, newIngredients, newSteps) {
+    try {
+        await client.connect();
+        const database = client.db('recipebox');
+        const collection = database.collection('recipes');
+        
+        const recipes = await collection.updateOne({title: title}, {$set: {ingredients: newIngredients, steps: newSteps}}, (err, res) => {
+            if (err) throw err;
+            console.log("UpdatedRecipe");
+            db.close();
+        });
+
+        return recipes;
+    } finally {
+        await client.close();
+    }
+}
+
+async function removeRecipe(title) {
+    try {
+        await client.connect();
+        const database = client.db('recipebox');
+        const collection = database.collection('recipes');
+
+        const query = {title: title};
+        await collection.deleteOne(query, (err, res) => {
+            if (err) throw err;
+            console.log("Deleted recipe");
+            db.close();
+        });
+    } finally {
+        await client.close();
+    }
+}
+
+async function addUser(username, password, permissions) {
+    try {
+        await client.connect();
+        const database = client.db('recipebox');
+        const collection = database.collection('recipes');
+
+        const potentialUser = await collection.findAll({user: username}, {user: 1}, (err, res) => {
+            if (err) throw err;
+        });
+        if (potentialUser.length > 0) throw new Error('Username taken');
+
+        await collection.insertOne({user: username, pass: password, perms: permissions}, (err, res) => {
+            if (err) throw err;
+            console.log("Inserted user");
+            db.close();
+        });
+    } finally {
+        await client.close();
+    }
+}
+
+async function validateUser(username, password) {
+    try {
+        await client.connect();
+        const database = client.db('recipebox');
+        const collection = database.collection('recipes');
+
+        const validated = await collection.findAll({user: username, pass: password}, (err, res) => {
+            if (err) throw err;
+            db.close();
+        });
+
+        if (validated.length > 0) return validated[0].perms;
+        else return false;
+    } finally {
+        await client.close();
+    }
+}
