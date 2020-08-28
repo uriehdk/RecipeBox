@@ -13,26 +13,9 @@ async function addRecipe(title, ingredients, steps) {
         const collection = database.collection('recipes');
         recipe = {title: title, ingredients: ingredients, stes: steps};
 
-        collection.insertOne(recipe, (err, res) => {
+        await collection.insertOne(recipe, (err, res) => {
             if (err) throw err;
             console.log("Registered recipe");
-            db.close();
-        });
-    } finally {
-        await client.close();
-    }
-}
-
-async function removeRecipe(title) {
-    try {
-        await client.connect();
-        const database = client.db('recipebox');
-        const collection = database.collection('recipes');
-
-        const query = {title: title};
-        collection.deleteOne(query, (err, res) => {
-            if (err) throw err;
-            console.log("Deleted recipe");
             db.close();
         });
     } finally {
@@ -72,6 +55,41 @@ async function getRecipes() {
         });
 
         return recipes;
+    } finally {
+        await client.close();
+    }
+}
+
+async function updateRecipe(title, newIngredients, newSteps) {
+    try {
+        await client.connect();
+        const database = client.db('recipebox');
+        const collection = database.collection('recipes');
+        
+        const recipes = await collection.updateOne({title: title}, {$set: {ingredients: newIngredients, steps: newSteps}}, (err, res) => {
+            if (err) throw err;
+            console.log("UpdatedRecipe");
+            db.close();
+        });
+
+        return recipes;
+    } finally {
+        await client.close();
+    }
+}
+
+async function removeRecipe(title) {
+    try {
+        await client.connect();
+        const database = client.db('recipebox');
+        const collection = database.collection('recipes');
+
+        const query = {title: title};
+        await collection.deleteOne(query, (err, res) => {
+            if (err) throw err;
+            console.log("Deleted recipe");
+            db.close();
+        });
     } finally {
         await client.close();
     }
