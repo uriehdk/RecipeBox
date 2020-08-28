@@ -5,26 +5,6 @@ const client = MongoClient(credentials.uri, {useUnifiedTopology: true});
 const hostname = '127.0.0.1';
 const port = 3000;
 
-
-
-async function run() {
-    try {
-        await client.connect();
-    
-        const database = client.db('recipebox');
-        const collection = database.collection('recipes');
-    
-        // Query for a movie that has the title 'Back to the Future'
-        const query = {title: 'Mediterranean White Bean Salad'};
-        const recipe = await collection.findOne(query);
-    
-        console.log(recipe);
-    } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
-    }
-}
-
 async function addRecipe(title, ingredients, steps) {
     try {
         await client.connect();
@@ -96,5 +76,3 @@ async function getRecipes() {
         await client.close();
     }
 }
-
-run().catch(console.dir);
