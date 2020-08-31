@@ -1,3 +1,4 @@
+
 const { MongoClient } = require('mongodb');
 const credentials = require('./credentials.json');
 const client = MongoClient(credentials.uri);
