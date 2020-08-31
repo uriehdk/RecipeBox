@@ -1,0 +1,41 @@
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+    display: flex;
+}
+
+.recipeBox {
+    flex: 1;
+    font-size: larger;
+}
+
+.login {
+    flex: 1;
+    padding-right: 60px;
+    padding-top: 4px;
+    text-align: right;
+}
+
+.footer {
+    background-color: antiquewhite;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 30px 30px 30px;
+    border: black solid 1px;
+    color: gray;
+}
+
+.header {
+    background-color: antiquewhite;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 30px 30px 30px;
+    border: black solid 1px;
+}
+
